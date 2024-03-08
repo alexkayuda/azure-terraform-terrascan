@@ -49,19 +49,3 @@ jobs:
       - name: Terraform Unlock
         run: terraform force-unlock ${{ inputs.lock_id }}
         working-directory: ./terraform
-
-    # - name: Terraform Init
-    #   run: terraform init -backend-config="backend.tfvars"
-    #   working-directory: ./terraform/development
-
-    # - name: Terraform Plan
-    #   run: terraform plan -out=tfplan
-    #   working-directory: ./terraform/development
-
-    # - name: Terraform Apply
-    #   run: terraform apply -auto-approve tfplan
-    #   working-directory: ./terraform/development
-
-    # - name: Terraform Show
-    #   run: terraform show
-    #   working-directory: ./terraform/development
