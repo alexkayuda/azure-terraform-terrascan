@@ -1,6 +1,12 @@
 # My Files
 notes.txt
 
+# Test Terraform Files
+/terraform/development/.terraform/*
+/terraform/development/.terraform.lock.hcl
+/terraform/development/dev.tfplan
+/terraform/development/dev.destroy.tfplan
+
 # Local .terraform directories
 **/.terraform/*
 
