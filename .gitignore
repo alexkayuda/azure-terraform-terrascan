@@ -7,6 +7,13 @@ notes.txt
 /terraform/development/dev.tfplan
 /terraform/development/dev.destroy.tfplan
 
+
+# Prod Terraform Files
+/terraform/production/.terraform/*
+/terraform/production/.terraform.lock.hcl
+/terraform/production/prod.tfplan
+/terraform/production/prod.destroy.tfplan
+
 # Local .terraform directories
 **/.terraform/*
 
