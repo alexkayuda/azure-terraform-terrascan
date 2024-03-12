@@ -1,4 +1,5 @@
-resource "azurerm_resource_group" "rg" {
+# Create resource group
+resource "azurerm_resource_group" "my_terraform_rg" {
   location = var.resource_group_location
   name     = "${random_pet.prefix.id}-rg"
 }
@@ -7,14 +8,14 @@ resource "azurerm_resource_group" "rg" {
 resource "azurerm_virtual_network" "my_terraform_network" {
   name                = "${random_pet.prefix.id}-vnet"
   address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.my_terraform_rg.location
+  resource_group_name = azurerm_resource_group.my_terraform_rg.name
 }
 
 # Create subnet
 resource "azurerm_subnet" "my_terraform_subnet" {
   name                 = "${random_pet.prefix.id}-subnet"
-  resource_group_name  = azurerm_resource_group.rg.name
+  resource_group_name  = azurerm_resource_group.my_terraform_rg.name
   virtual_network_name = azurerm_virtual_network.my_terraform_network.name
   address_prefixes     = ["10.0.1.0/24"]
 }
@@ -22,16 +23,16 @@ resource "azurerm_subnet" "my_terraform_subnet" {
 # Create public IPs
 resource "azurerm_public_ip" "my_terraform_public_ip" {
   name                = "${random_pet.prefix.id}-public-ip"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.my_terraform_rg.location
+  resource_group_name = azurerm_resource_group.my_terraform_rg.name
   allocation_method   = "Dynamic"
 }
 
 # Create Network Security Group and rules
 resource "azurerm_network_security_group" "my_terraform_nsg" {
   name                = "${random_pet.prefix.id}-nsg"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.my_terraform_rg.location
+  resource_group_name = azurerm_resource_group.my_terraform_rg.name
 
   security_rule {
     name                       = "RDP"
@@ -60,8 +61,8 @@ resource "azurerm_network_security_group" "my_terraform_nsg" {
 # Create network interface
 resource "azurerm_network_interface" "my_terraform_nic" {
   name                = "${random_pet.prefix.id}-nic"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.my_terraform_rg.location
+  resource_group_name = azurerm_resource_group.my_terraform_rg.name
 
   ip_configuration {
     name                          = "my_nic_configuration"
@@ -80,8 +81,8 @@ resource "azurerm_network_interface_security_group_association" "example" {
 # Create storage account for boot diagnostics
 resource "azurerm_storage_account" "my_storage_account" {
   name                     = "diag${random_id.random_id.hex}"
-  location                 = azurerm_resource_group.rg.location
-  resource_group_name      = azurerm_resource_group.rg.name
+  location                 = azurerm_resource_group.my_terraform_rg.location
+  resource_group_name      = azurerm_resource_group.my_terraform_rg.name
   account_tier             = "Standard"
   account_replication_type = "LRS"
 }
@@ -92,8 +93,8 @@ resource "azurerm_windows_virtual_machine" "main" {
   name                  = "${var.prefix}-vm"
   admin_username        = "azureuser"
   admin_password        = random_password.password.result
-  location              = azurerm_resource_group.rg.location
-  resource_group_name   = azurerm_resource_group.rg.name
+  location              = azurerm_resource_group.my_terraform_rg.location
+  resource_group_name   = azurerm_resource_group.my_terraform_rg.name
   network_interface_ids = [azurerm_network_interface.my_terraform_nic.id]
   size                  = "Standard_DS1_v2"
 
@@ -136,7 +137,7 @@ resource "azurerm_virtual_machine_extension" "web_server_install" {
 resource "random_id" "random_id" {
   keepers = {
     # Generate a new ID only when a new resource group is defined
-    resource_group = azurerm_resource_group.rg.name
+    resource_group = azurerm_resource_group.my_terraform_rg.name
   }
 
   byte_length = 8
