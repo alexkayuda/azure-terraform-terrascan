@@ -1,5 +1,5 @@
 output "resource_group_name" {
-  value = azurerm_resource_group.rg.name
+  value = azurerm_resource_group.my_terraform_rg.name
 }
 
 output "public_ip_address" {
