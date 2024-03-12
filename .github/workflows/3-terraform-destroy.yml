@@ -1,13 +1,13 @@
-name: "Terraform Deploy"
+name: "Terraform Destroy"
 
 on:
   push:
     branches:
-      - master
+      - development
 
 jobs:
-  deploy:
-    name: "Terraform Deploy"
+  destroy:
+    name: "Terraform Destroy"
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -27,23 +27,11 @@ jobs:
         with:
           terraform_version: 1.6.5
 
-      - name: Terraform Format
-        run: terraform fmt -check -recursive
-        working-directory: ./terraform
-
-      - name: Terraform Validate
-        run: terraform validate
-        working-directory: ./terraform
-
       - name: Login to Azure
         uses: azure/login@v1.6.1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
           enable-AzPSSession: true
-
-      - name: Terraform Init
-        run: terraform init -reconfigure -backend-config="backend.tfvars"
-        working-directory: ./terraform/development
 
       - name: Terraform Plan Destroy
         run: terraform plan destroy -out=tfplan
